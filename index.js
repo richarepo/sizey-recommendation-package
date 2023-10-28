@@ -53,9 +53,9 @@ if your web-shop (and brand) is using UPC or EAN code for product variation you 
 */
 const hasSizeyChart = async (upc) => {
   //     do uncomment when you have API working or after replacing this with working API
-  //   const product = await fetch('https://vroom-api.sizey.ai/product-variations/' + upc, { headers: { 'x-sizey-key': APIKEY } }).then(o => o.json()).catch(err => ({}));
-  //   return !!product?.sizeChart?.id;
-  return 2012;
+    const product = await fetch('https://vroom-api.sizey.ai/products/' + upc, { headers: { 'x-sizey-key': APIKEY } }).then(o => o.json()).catch(err => ({}));
+    return !!product?.sizeChart?.id;
+  // return 2012;
 };
 
 /*
