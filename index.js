@@ -37,13 +37,14 @@ if (variationArticleNumbers) {
  * To get your own APIKEY you need to sign-up to Sizey Portal and create your own Customer Account.
  * Add Sizey APIKEY here:
  */
-const APIKEY = "cHV0aWlra2k6am9oYW4=";
+const APIKEY = $("[data-api-key]").data("api-key") || "replacethis=";
 
 /*
  * These are variables you can change, but is not mandatory. This script will automatically
  * create a link that opens a recommendation process.
  */
-const RECOMMENDATION_LINK_TEXT = "Test your size";
+const RECOMMENDATION_LINK_TEXT =
+  $("[data-text]").data("text") || "Test your size";
 const RECOMMENDATION_TEXT = "Your size recommendation is $SIZE";
 const RECOMMENDATION_NOTFOUND_TEXT =
   "Unable to get recommendation for this product.";
@@ -53,8 +54,12 @@ if your web-shop (and brand) is using UPC or EAN code for product variation you 
 */
 const hasSizeyChart = async (upc) => {
   //     do uncomment when you have API working or after replacing this with working API
-    const product = await fetch('https://vroom-api.sizey.ai/products/' + upc, { headers: { 'x-sizey-key': APIKEY } }).then(o => o.json()).catch(err => ({}));
-    return !!product?.sizeChart?.id;
+  const product = await fetch("https://vroom-api.sizey.ai/products/" + upc, {
+    headers: { "x-sizey-key": APIKEY },
+  })
+    .then((o) => o.json())
+    .catch((err) => ({}));
+  return !!product?.sizeChart?.id;
   // return 2012;
 };
 
@@ -133,7 +138,8 @@ window.addEventListener("load", async (event) => {
   });
 
   if (await hasSizeyChart(productId)) {
-    var a = document.createElement("a");
+    const elemnt_type = $("[data-display-type]").data("display-type") || "a";
+    var a = document.createElement(`${elemnt_type}`);
     var linkText = document.createTextNode(RECOMMENDATION_LINK_TEXT);
     a.appendChild(linkText);
     a.href = "#";
