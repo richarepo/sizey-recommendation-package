@@ -38,7 +38,8 @@ if (variationArticleNumbers) {
  * To get your own APIKEY you need to sign-up to Sizey Portal and create your own Customer Account.
  * Add Sizey APIKEY here:
  */
-const APIKEY = $("[data-api-key]").data("api-key") || "replacethis=";
+// const APIKEY = $("[data-api-key]").data("api-key") || "replacethis=";
+const APIKEY = sizey_api_data.APIKEY || 'TzQzeGZXOU5CQ0RSS1N4TEhyb1k6bTlDNEttUVM=';
 
 /*
  * These are variables you can change, but is not mandatory. This script will automatically
@@ -46,6 +47,7 @@ const APIKEY = $("[data-api-key]").data("api-key") || "replacethis=";
  */
 const RECOMMENDATION_LINK_TEXT =
   $("[data-text]").data("text") || "Test your size";
+const RECOMMENDATION_BUTTON_TEXT = ("Test My Size"); 
 const RECOMMENDATION_TEXT = "Your size recommendation is $SIZE";
 const RECOMMENDATION_NOTFOUND_TEXT =
   "Unable to get recommendation for this product.";
@@ -116,9 +118,9 @@ window.addEventListener("load", async (event) => {
     console.log("sizey-container not found.");
     return;
   }
-  const productId = article.dataset.productean;
+  const upc = article.dataset.upc;
 
-  if (!productId) {
+  if (!upc) {
     console.log("Product ID missing from sizey-container.", article.dataset);
     return;
   }
@@ -139,20 +141,35 @@ window.addEventListener("load", async (event) => {
   });
 
   if (await hasSizeyChart(productId)) {
-    const elemnt_type = $("[data-display-type]").data("display-type") || "a";
-    var a = document.createElement(`${elemnt_type}`);
-    var linkText = document.createTextNode(RECOMMENDATION_LINK_TEXT);
-    a.appendChild(linkText);
-    a.href = "#";
-    a.id = "open-sizey";
+    // const elemnt_type = $("[data-display-type]").data("display-type") || "a";
+    const showAsLink = sizey_api_data.showAsLink === 'true';
+    var element;
+    if (showAsLink) {
+    		console.log('coming in if==>');
+        	element = document.createElement('a');
+        	element.href = '#';
+		var elementText = document.createTextNode(RECOMMENDATION_LINK_TEXT);
+		element.appendChild(elementText);
+    	} else {
+		    console.log('coming in else==>');
+        element = document.createElement('button');
+        element.style.backgroundColor = 'blue';
+    		element.style.color = 'white';
+    		element.style.border = 'none';
+    		element.style.fontSize = '12px';
+    		element.style.fontFamily = 'sans-serif';
+		    var elementText = document.createTextNode(RECOMMENDATION_BUTTON_TEXT);
+	    	element.appendChild(elementText);
+    	}
+	    element.id = "open-sizey";
 
-    a.onclick = (ev) => {
-      var recommendationNode = document.querySelector("#sizey-recommendation");
-      if (recommendationNode) {
-        recommendationNode.innerText = "";
-      }
+      a.onclick = (ev) => {
+        var recommendationNode = document.querySelector("#sizey-recommendation");
+        if (recommendationNode) {
+          recommendationNode.innerText = "";
+        }
 
-      openRecommendationPopup(productId);
+      openRecommendationPopup(upc);
       ev.preventDefault();
     };
     article.appendChild(a);
