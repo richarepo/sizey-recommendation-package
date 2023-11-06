@@ -21,6 +21,7 @@
  *
  */
 
+/*
 const variationArticleNumbers = [];
 $("[data-variation-ean]").each(function () {
   variationArticleNumbers.push($(this).data("variation-ean"));
@@ -30,6 +31,7 @@ if (variationArticleNumbers) {
   const sizeyProduct = variationArticleNumbers[0];
   $("#sizey-container").attr("data-productean", sizeyProduct);
 }
+*/
 
 /*
  * To get the service working you need to add your Sizey APIKEY!
@@ -44,9 +46,8 @@ const APIKEY = sizey_api_data.APIKEY || 'TzQzeGZXOU5CQ0RSS1N4TEhyb1k6bTlDNEttUVM
  * These are variables you can change, but is not mandatory. This script will automatically
  * create a link that opens a recommendation process.
  */
-const RECOMMENDATION_LINK_TEXT =
-  $("[data-text]").data("text") || "Test your size";
-const RECOMMENDATION_BUTTON_TEXT = ("Test My Size"); 
+const RECOMMENDATION_LINK_TEXT = sizey_api_data.RECOMMENDATION_LINK_TEXT || "Test your size"; 
+const RECOMMENDATION_BUTTON_TEXT = sizey_api_data.RECOMMENDATION_BUTTON_TEXT || "Test My Size"; 
 const RECOMMENDATION_TEXT = "Your size recommendation is $SIZE";
 const RECOMMENDATION_NOTFOUND_TEXT =
   "Unable to get recommendation for this product.";
@@ -56,7 +57,7 @@ if your web-shop (and brand) is using UPC or EAN code for product variation you 
 */
 const hasSizeyChart = async (upc) => {
   //     do uncomment when you have API working or after replacing this with working API
-  const product = await fetch("https://vroom-api.sizey.ai/products/" + upc, {
+  const product = await fetch("https://vroom-api.sizey.dev/products/variations/" + upc, {
     headers: { "x-sizey-key": APIKEY },
   })
     .then((o) => o.json())
@@ -139,18 +140,16 @@ window.addEventListener("load", async (event) => {
     }
   });
 
-  if (await hasSizeyChart(productId)) {
+  if (await hasSizeyChart(upc)) {
     // const elemnt_type = $("[data-display-type]").data("display-type") || "a";
     const showAsLink = sizey_api_data.showAsLink === 'true';
     var element;
     if (showAsLink) {
-    		console.log('coming in if==>');
-        	element = document.createElement('a');
-        	element.href = '#';
-		var elementText = document.createTextNode(RECOMMENDATION_LINK_TEXT);
-		element.appendChild(elementText);
-    	} else {
-		    console.log('coming in else==>');
+        element = document.createElement('a');
+        element.href = '#';
+		    var elementText = document.createTextNode(RECOMMENDATION_LINK_TEXT);
+		    element.appendChild(elementText);
+    } else {
         element = document.createElement('button');
         element.style.backgroundColor = 'blue';
     		element.style.color = 'white';
@@ -162,15 +161,15 @@ window.addEventListener("load", async (event) => {
     	}
 	    element.id = "open-sizey";
 
-      a.onclick = (ev) => {
+      element.onclick = (ev) => {
         var recommendationNode = document.querySelector("#sizey-recommendation");
         if (recommendationNode) {
           recommendationNode.innerText = "";
         }
 
-      openRecommendationPopup(upc);
-      ev.preventDefault();
+        openRecommendationPopup(upc);
+        ev.preventDefault();
     };
-    article.appendChild(a);
+    article.appendChild(element);
   }
 });
