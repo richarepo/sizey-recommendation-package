@@ -1,13 +1,13 @@
 {
-  "name": "sizey-recommendation-package",
+  "name": "sizey-recommendation",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-js": "browserify ./index.js -o ./bundle.js"
+    "build": "browserify ./index.js -o ./sizey-recommendation.min.js"
   },
-  "author": "",
+  "author": "sizey",
   "license": "ISC",
   "dependencies": {
     "browserify": "^17.0.0"
